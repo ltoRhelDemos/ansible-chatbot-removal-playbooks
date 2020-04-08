@@ -1,0 +1,29 @@
+---
+
+  - name: Removing required filesystem for chatbot!
+
+    hosts: '{{ hosts2manage | default("managedhosts") }}'
+
+    become: yes
+    become_user: root
+
+    tasks:
+
+      - name: Umounting the  filesystem.
+        mount:
+          path: "/home/chatbot"
+          src: "/dev/xvdb"
+          fstype: "xfs"
+          state: absent
+
+      - name: removing /home/chatbot
+        file:
+          path: "/home/chatbot"
+          state: absent
+
+
+      - name: removing chatbot Volume group.
+        lvg:
+          vg: "chatbotVG"
+          force: yes
+          state: absent
